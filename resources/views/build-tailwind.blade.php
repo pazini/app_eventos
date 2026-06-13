@@ -1,0 +1,44 @@
+<div class="bg-stone-50 py-4 px-2 md:px-16"></div>
+<div class="bg-stone-100 py-4 px-2 md:px-16"></div>
+<div class="bg-sky-50 py-4 px-2 md:px-16"></div>
+<div class="bg-sky-100 py-4 px-2 md:px-16"></div>
+<div class="bg-yellow-700 py-4 px-2 md:px-16"></div>
+<div class="bg-yellow-600 py-4 px-2 md:px-16"></div>
+<div class="bg-yellow-500 py-4 px-2 md:px-16"></div>
+<div class="w-1/4 border-l-4"></div>
+<div class="w-1/4 border-l-8 rounded-l-none"></div>
+<div class="border-l-4 border-blue-700"></div></div>
+<div class="border-l-4 border-green-700"></div>
+<div class="border-l-4 border-gray-500"></div>
+<div class="border-l-4 border-red-500"></div>
+<div class="border-l-4 border-red-500"></div>
+<div class="border-l-4 border-green-700"></div>
+<div class="border-l-4 border-gray-500"></div>
+<div class="border-l-8 border-blue-700"></div></div>
+<div class="border-l-8 border-green-700"></div>
+<div class="border-l-8 border-gray-500"></div>
+<div class="border-l-8 border-red-500"></div>
+<div class="border-l-8 border-red-500"></div>
+<div class="border-l-8 border-green-700"></div>
+<div class="border-l-8 border-gray-500"></div>
+
+<div class="border-b-2 border-blue-400 bg-blue-50"></div>
+<div class="border-b-4 border-blue-500 bg-blue-100"></div>
+<div class="border-b-8 border-blue-600 bg-blue-200"></div>
+<div class="border-b-2 border-blue-700 bg-blue-300"></div>
+<div class="border-b-4 border-blue-800 bg-blue-400"></div>
+<div class="border-b-8 border-blue-900 bg-blue-500"></div>
+
+<div class="border-b-2 border-red-400 bg-red-50"></div>
+<div class="border-b-4 border-red-500 bg-red-100"></div>
+<div class="border-b-8 border-red-600 bg-red-200"></div>
+<div class="border-b-2 border-red-700 bg-red-300"></div>
+<div class="border-b-4 border-red-800 bg-red-400"></div>
+<div class="border-b-8 border-red-900 bg-red-500"></div>
+
+<div class="border-b-2 border-green-400"></div>
+<div class="border-b-4 border-green-500"></div>
+<div class="border-b-8 border-green-600"></div>
+<div class="border-b-2 border-green-700"></div>
+<div class="border-b-4 border-green-800"></div>
+<div class="border-b-8 border-green-900"></div>

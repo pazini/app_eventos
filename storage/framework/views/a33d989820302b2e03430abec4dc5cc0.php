@@ -1,0 +1,3 @@
+<?php echo e($slot); ?>: <?php echo e($url); ?>
+
+<?php /**PATH /home/igrnc24/public_html_sistemas/campanhas-eventos-proeventpay-transicao/resources/views/vendor/mail/text/button.blade.php ENDPATH**/ ?>

@@ -1,0 +1,2 @@
+[<?php echo e($slot); ?>](<?php echo e($url); ?>)
+<?php /**PATH /home/igrnc24/public_html_sistemas/campanhas-eventos/resources/views/vendor/mail/text/header.blade.php ENDPATH**/ ?>

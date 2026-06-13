@@ -1,0 +1,39 @@
+{
+  "_alpinejs-Bq2KT4vH.js": {
+    "file": "assets/alpinejs-Bq2KT4vH.js",
+    "name": "alpinejs"
+  },
+  "_axios-B9ygI19o.js": {
+    "file": "assets/axios-B9ygI19o.js",
+    "name": "axios"
+  },
+  "_lodash-r7G00dGg.js": {
+    "file": "assets/lodash-r7G00dGg.js",
+    "name": "lodash"
+  },
+  "_tw-elements-BKWg3xAN.js": {
+    "file": "assets/tw-elements-BKWg3xAN.js",
+    "name": "tw-elements"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BKz0o8x0.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-C_JeJ6xU.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_lodash-r7G00dGg.js",
+      "_axios-B9ygI19o.js",
+      "_tw-elements-BKWg3xAN.js",
+      "_alpinejs-Bq2KT4vH.js"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+<x-guest-layout>
+    {{-- @extends('errors::minimal')
+
+    @section('title', __('Server Error'))
+    @section('code', '500')
+    @section('message', __('Server Error')) --}}
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-white">
+        <div class="flex flex-col justify-center items-center w-full mt-6 px-6 py-4 overflow-hidden sm:rounded-sm">
+
+            <a href="{{ getHomeUrl() }}">
+                <x-jet-authentication-card-logo />
+            </a>
+
+            <div class="my-4 py-4">
+                <div class="text-center text-6xl font-bold">500</div>
+                <div class="text-center text-2xl font-semibold">Ops! Tivemos um erro interno</div>
+                <div class="text-center text-xl font-medium">Estamos já está trabalhando para resolver</div>
+            </div>
+
+            @auth
+                <x-button dark label="IR PARA O PAINEL" href="{{ getPainelUrl() }}/" />
+            @else
+                <x-button dark label="IR PARA A HOME" href="/" />
+            @endauth
+
+        </div>
+    </div>
+</x-guest-layout>

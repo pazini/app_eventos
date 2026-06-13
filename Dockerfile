@@ -9,19 +9,7 @@ COPY resources ./resources
 COPY vite.config.js tailwind.config.js postcss.config.js ./
 RUN npm run build
 
-FROM composer:2 AS vendor
-
-WORKDIR /app
-COPY composer.json composer.lock ./
-RUN composer install \
-    --no-dev \
-    --no-interaction \
-    --no-progress \
-    --prefer-dist \
-    --optimize-autoloader \
-    --no-scripts
-
-FROM php:8.2-fpm-bookworm AS runtime
+FROM php:8.2-fpm-bookworm AS php-base
 
 ENV APP_ENV=production \
     APP_DEBUG=false \
@@ -55,6 +43,21 @@ RUN apt-get update \
         pdo_pgsql \
         zip \
     && rm -rf /var/lib/apt/lists/*
+
+FROM php-base AS vendor
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-scripts
+
+FROM php-base AS runtime
 
 WORKDIR /var/www/html
 

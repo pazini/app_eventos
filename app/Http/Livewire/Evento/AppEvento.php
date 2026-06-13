@@ -1018,6 +1018,11 @@ class AppEvento extends Component
                 // ALERT SUCESSO
                 session()->flash('conclusao_success', 'Compra realizada com sucesso');
                 session()->flash('conclusao_success_sub','LOCALIZADOR: ' . $order->order_control);
+
+                return redirect()->route('evento-vouchers', [
+                    'localizador' => $order->order_control,
+                    'order_id' => $order->id,
+                ]);
             }
         }
         catch (\Throwable $th)

@@ -1,14 +1,5 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22-bookworm-slim AS frontend
-
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install --no-audit --no-fund
-COPY resources ./resources
-COPY vite.config.js tailwind.config.js postcss.config.js ./
-RUN npm run build
-
 FROM php:8.2-fpm-bookworm AS php-base
 
 ENV APP_ENV=production \
@@ -56,6 +47,16 @@ RUN composer install \
     --prefer-dist \
     --optimize-autoloader \
     --no-scripts
+
+FROM node:22-bookworm-slim AS frontend
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install --no-audit --no-fund
+COPY --from=vendor /app/vendor ./vendor
+COPY resources ./resources
+COPY vite.config.js tailwind.config.js postcss.config.js ./
+RUN npm run build
 
 FROM php-base AS runtime
 

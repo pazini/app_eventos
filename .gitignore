@@ -20,7 +20,5 @@ campanhas.zip
 .vscode/*
 .claude
 .claude/*
-composer.lock
-package-lock.json
 _docs/HISTORICO_MUDANCAS.md
 _docs/INDICE_DOCUMENTACAO.md

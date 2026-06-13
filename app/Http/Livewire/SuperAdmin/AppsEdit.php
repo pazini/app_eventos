@@ -10,6 +10,7 @@ use App\Models\AppModule;
 use App\Models\AppPayGateway;
 use App\Models\UserApp;
 use App\Models\CustomerAppModule;
+use App\Scopes\ActiveCustomerScope;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -177,7 +178,7 @@ class AppsEdit extends Component
         $this->stats = [
             'customers' => [
                 'total' => Customer::withoutTenantScope()->where('app_id', $this->appId)->count(),
-                'active' => Customer::withoutTenantScope()->where('app_id', $this->appId)->count(), // Todos os customers são considerados ativos
+                'active' => Customer::withoutTenantScope()->where('app_id', $this->appId)->where('is_active', true)->count(),
             ],
             'campaigns' => [
                 'total' => \DB::table('tbc_campaign as c')
@@ -436,13 +437,32 @@ class AppsEdit extends Component
     }
 
     /**
-     * Carrega customers da aplicação ignorando o tenant scope.
+     * Alterna o status is_active de um customer.
+     */
+    public function toggleCustomerActive(string $customerId): void
+    {
+        $customer = Customer::withoutTenantScope()
+            ->where('app_id', $this->appId)
+            ->findOrFail($customerId);
+
+        $customer->is_active = !$customer->is_active;
+        $customer->save();
+
+        $status = $customer->is_active ? 'ativado' : 'desativado';
+        $this->emit('notify', "Cliente \"{$customer->name_corporate}\" {$status} com sucesso.", 'success');
+
+        $this->loadCustomersList();
+        $this->loadStats();
+    }
+
+    /**
+     * Carrega customers da aplicação ignorando o tenant scope (lista todos: ativos e inativos).
      */
     private function loadCustomersList(): void
     {
         $this->customersList = Customer::withoutTenantScope()
             ->where('app_id', $this->appId)
-            ->orderBy('created_at')
+            ->orderBy('name_corporate')
             ->get();
         $this->customersCount = $this->customersList->count();
     }

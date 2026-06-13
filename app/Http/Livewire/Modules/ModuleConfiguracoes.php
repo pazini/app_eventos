@@ -18,6 +18,7 @@ use App\Models\ModCampaign\CampaignOrganizer;
 use App\Models\ModEvent\Event;
 use App\Models\UserCustomer;
 use App\Models\UserCampaignOrganizer;
+use App\Scopes\ActiveCustomerScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -296,7 +297,8 @@ class ModuleConfiguracoes extends Component
 
         // Carrega usuários, módulos e gateways do cliente selecionado (escopo principal da tela)
         if ($this->customerId) {
-            $customer = Customer::with(['users', 'appModules', 'paymentGateways'])->find($this->customerId);
+            $customer = Customer::withoutGlobalScope(ActiveCustomerScope::class)
+                ->with(['users', 'appModules', 'paymentGateways'])->find($this->customerId);
 
             // Carrega usuários com os campos do pivot
             $this->customerUsers = $customer
@@ -360,6 +362,20 @@ class ModuleConfiguracoes extends Component
         }
 
         return view('livewire.modules.module-configuracoes')->layout('layouts.app-pep-auth');
+    }
+
+    /**
+     * Busca um customer ignorando o ActiveCustomerScope.
+     * Usado no painel de administração para que o admin possa acessar
+     * e editar os dados do seu próprio customer mesmo que esteja inativo.
+     */
+    private function findCustomerIgnoringActiveScope(?string $id = null): ?Customer
+    {
+        $id = $id ?? $this->customerId;
+        if (!$id) {
+            return null;
+        }
+        return Customer::withoutGlobalScope(ActiveCustomerScope::class)->find($id);
     }
 
     /**
@@ -474,7 +490,7 @@ class ModuleConfiguracoes extends Component
         // Define novo customer na sessão se houver valor
         if ($this->customerId) {
             sessionCustomer($this->customerId);
-            $customer = Customer::find($this->customerId);
+            $customer = $this->findCustomerIgnoringActiveScope();
             $customerName = $customer ? $customer->name_corporate : 'Cliente não encontrado';
 
             $this->emit('showNotification', 'success', 'Cliente selecionado: ' . $customerName);
@@ -491,7 +507,7 @@ class ModuleConfiguracoes extends Component
             return;
         }
 
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
 
         if (!$customer) {
             $this->customerUsers = collect();
@@ -796,7 +812,7 @@ class ModuleConfiguracoes extends Component
             session()->flash('success', $message);
 
             // Recarrega os usuários do cliente
-            $customer = Customer::find($this->customerId);
+            $customer = $this->findCustomerIgnoringActiveScope();
             if ($customer) {
                 $this->reloadCustomerUsers();
             }
@@ -1293,7 +1309,7 @@ class ModuleConfiguracoes extends Component
         }
 
         try {
-            $customer = Customer::find($this->customerId);
+            $customer = $this->findCustomerIgnoringActiveScope();
             if (!$customer) {
                 $this->dispatchBrowserEvent('gateway-errors', ['errors' => ['Cliente não encontrado.']]);
                 $this->dispatchBrowserEvent('notification', ['type' => 'error', 'title' => 'Erro!', 'message' => 'Cliente não encontrado.']);
@@ -1460,7 +1476,7 @@ class ModuleConfiguracoes extends Component
             session()->flash('success', "Gateway {$status} com sucesso!");
 
             // Recarrega os gateways separados por status
-            $customer = Customer::find($this->customerId);
+            $customer = $this->findCustomerIgnoringActiveScope();
             if ($customer) {
                 $gateways = $customer->paymentGateways;
                 $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1506,7 +1522,7 @@ class ModuleConfiguracoes extends Component
             session()->flash('success', "Gateway {$gatewayLabel} removido com sucesso!");
 
             // Recarrega os gateways separados por status
-            $customer = Customer::find($this->customerId);
+            $customer = $this->findCustomerIgnoringActiveScope();
             if ($customer) {
                 $gateways = $customer->paymentGateways;
                 $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1609,7 +1625,7 @@ class ModuleConfiguracoes extends Component
         session()->flash('success', 'Taxas de parcelamento atualizadas com sucesso!');
 
         // Recarrega os gateways separados por status
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
         if ($customer) {
             $gateways = CustomerPayGateway::where('customer_id', $customer->id)->get();
             $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1700,7 +1716,7 @@ class ModuleConfiguracoes extends Component
         session()->flash('success', 'Taxas do Slip PIX atualizadas com sucesso!');
 
         // Recarrega os gateways separados por status
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
         if ($customer) {
             $gateways = CustomerPayGateway::where('customer_id', $customer->id)->get();
             $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1784,7 +1800,7 @@ class ModuleConfiguracoes extends Component
 
         session()->flash('success', 'Taxas do PIX atualizadas com sucesso!');
 
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
         if ($customer) {
             $gateways = CustomerPayGateway::where('customer_id', $customer->id)->get();
             $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1868,7 +1884,7 @@ class ModuleConfiguracoes extends Component
 
         session()->flash('success', 'Taxas do Boleto atualizadas com sucesso!');
 
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
         if ($customer) {
             $gateways = CustomerPayGateway::where('customer_id', $customer->id)->get();
             $this->customerGateways = $gateways->filter(function ($gateway) {
@@ -1916,7 +1932,7 @@ class ModuleConfiguracoes extends Component
             return false;
         }
 
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
 
         if (!$customer) {
             session()->flash('error', 'Cliente não encontrado.');
@@ -2159,14 +2175,15 @@ class ModuleConfiguracoes extends Component
 
             if ($this->isEditingCustomer && $this->customerId) {
                 // Atualiza cliente existente
-                $customer = Customer::find($this->customerId);
+                $customer = $this->findCustomerIgnoringActiveScope();
                 if (!$customer) {
                     session()->flash('error', 'Cliente não encontrado para atualização.');
                     return;
                 }
 
                 // Verifica se o slug já existe em outro cliente
-                $existingSlug = Customer::where('customer_slug', $data['customer_slug'])
+                $existingSlug = Customer::withoutGlobalScope(ActiveCustomerScope::class)
+                    ->where('customer_slug', $data['customer_slug'])
                     ->where('id', '!=', $this->customerId)
                     ->first();
 
@@ -2180,7 +2197,8 @@ class ModuleConfiguracoes extends Component
                 $message = "Cliente {$this->customerNameCorporate} atualizado com sucesso!";
             } else {
                 // Verifica se o slug já existe
-                $existingSlug = Customer::where('customer_slug', $data['customer_slug'])->first();
+                $existingSlug = Customer::withoutGlobalScope(ActiveCustomerScope::class)
+                    ->where('customer_slug', $data['customer_slug'])->first();
                 if ($existingSlug) {
                     DB::rollBack();
                     $this->addError('customerSlug', 'Este slug já está em uso. Por favor, escolha outro.');
@@ -2237,7 +2255,7 @@ class ModuleConfiguracoes extends Component
             return null;
         }
 
-        $customer = Customer::find($this->customerId);
+        $customer = $this->findCustomerIgnoringActiveScope();
         if (!$customer) {
             session()->flash('error', 'Cliente não encontrado.');
             return null;

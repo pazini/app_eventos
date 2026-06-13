@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\ActiveCustomerScope;
 use App\Traits\HasTenantScope;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
@@ -52,9 +53,19 @@ class Customer extends Model
         'country',
         'name_short',
         'generate_invoice',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     protected $dates = [];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ActiveCustomerScope);
+    }
 
     public function app()
     {

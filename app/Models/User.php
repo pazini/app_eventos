@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
+use App\Scopes\ActiveCustomerScope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -74,6 +75,7 @@ class User extends Authenticatable
     public function customers()
     {
         return $this->belongsToMany(Customer::class, 'users_customer')
+            ->withoutGlobalScope(ActiveCustomerScope::class)
             ->withPivot(['user_active', 'user_role', 'can_events', 'can_campaigns', 'can_subscriptions'])
             ->orderBy('users_customer.created_at');
     }

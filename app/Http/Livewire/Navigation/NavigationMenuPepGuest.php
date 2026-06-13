@@ -72,6 +72,7 @@ class NavigationMenuPepGuest extends Component
                 ->toArray();
 
             $this->organizers = \App\Models\ModCampaign\CampaignOrganizer::whereIn('id', $organizerIds)
+                ->whereHas('customer')
                 ->with(['customer:id,name_corporate'])
                 ->orderBy('organizer_name_full')
                 ->get(['id', 'customer_id', 'organizer_name', 'organizer_name_full']);
@@ -96,6 +97,7 @@ class NavigationMenuPepGuest extends Component
                 ->toArray();
 
             $this->organizers = \App\Models\CustomerOrganizer::whereIn('id', $organizerIds)
+                ->whereHas('customer')
                 ->with(['customer:id,name_corporate', 'organization:id,organization_name'])
                 ->orderBy('organizer_slug')
                 ->get(['id', 'customer_id', 'organization_id', 'organizer_slug', 'organizer_name', 'organizer_name_full']);

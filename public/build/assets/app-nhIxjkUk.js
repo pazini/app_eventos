@@ -1,0 +1,1 @@
+import{_ as i}from"./lodash-BPMun04b.js";import{a as t}from"./axios-BjtuyMK1.js";import"./tw-elements-BKWg3xAN.js";import{m as o}from"./alpinejs-DLuZkmyn.js";window._=i;window.axios=t;window.axios.defaults.headers.common["X-Requested-With"]="XMLHttpRequest";window.Alpine=o;o.start();

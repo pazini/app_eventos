@@ -1017,7 +1017,7 @@ class AppEvento extends Component
 
                 // ALERT SUCESSO
                 session()->flash('conclusao_success', 'Compra realizada com sucesso');
-                session()->flash('conclusao_success_sub','LOCALIZADOR: ' . $this->order['order_control']);
+                session()->flash('conclusao_success_sub','LOCALIZADOR: ' . $order->order_control);
             }
         }
         catch (\Throwable $th)
@@ -1149,4 +1149,3 @@ class AppEvento extends Component
         return $buscaCep;
     }
 }
-

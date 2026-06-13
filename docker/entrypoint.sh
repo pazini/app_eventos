@@ -12,6 +12,10 @@ mkdir -p \
     storage/logs \
     bootstrap/cache
 
+if [[ -d /var/www/storage-seed ]]; then
+    cp -a --no-clobber /var/www/storage-seed/. storage/app/
+fi
+
 if [[ ! -L public/storage || ! -e public/storage ]]; then
     rm -rf public/storage
     php artisan storage:link

@@ -63,6 +63,7 @@ FROM php-base AS runtime
 WORKDIR /var/www/html
 
 COPY . .
+COPY storage/app/public /var/www/storage-seed/public
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 COPY docker/nginx.conf /etc/nginx/nginx.conf

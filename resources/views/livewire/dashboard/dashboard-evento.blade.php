@@ -280,6 +280,9 @@
                                         </div>
                                     </div>
                                     <div class="text-base font-normal break-words">{{ $ticketsType->ticket_description ?? '---' }}</div>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        Criado em {{ $ticketsType->created_at ? $ticketsType->created_at->format('d/m/Y H:i') : '--/--/----' }} por {{ $ticketsType->creator->name ?? 'usuário não identificado' }}
+                                    </div>
                                 </div>
 
                                 <div class="col-span-full md:col-span-2">
@@ -650,10 +653,13 @@
         @endif
 
         {{-- key --}}
-        <div class="bg-white shadow-md border border-gray-200 rounded-lg mb-8 p-4">
-            <div class="text-xs text-gray-500">
+        <div class="bg-white shadow-md border border-gray-200 rounded-lg mb-8 p-4 text-xs text-gray-500">
+            <div>
                 {{ $target->event_slug }} : {{ $target->id}}
             </div>
+            <p class="text-white/90 text-xs mt-1">
+                Criado em {{ $target->created_at ? $target->created_at->format('d/m/Y H:i') : '--/--/----' }} por {{ $target->creator->name ?? 'usuário não identificado' }}
+            </p>
         </div>
     @else
         <div class="mb-6 bg-gradient-to-r from-blue-500 via-sky-500 to-cyan-500 rounded-lg relative overflow-hidden shadow-md">

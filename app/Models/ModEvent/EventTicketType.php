@@ -4,8 +4,10 @@ namespace App\Models\ModEvent;
 
 use App\Models\AppEvent\AppEventOrder;
 use App\Models\AppEvent\AppEventOrderTicket;
+use App\Models\User;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EventTicketType extends Model
 {
@@ -56,6 +58,32 @@ class EventTicketType extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (EventTicketType $ticketType) {
+            if ($userId = auth()->id()) {
+                $ticketType->created_by = $userId;
+                $ticketType->updated_by = $userId;
+            }
+        });
+
+        static::updating(function (EventTicketType $ticketType) {
+            if ($userId = auth()->id()) {
+                $ticketType->updated_by = $userId;
+            }
+        });
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 
     public function orders()
     {

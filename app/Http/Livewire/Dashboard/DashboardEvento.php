@@ -74,7 +74,15 @@ class DashboardEvento extends Component
     public function render()
     {
         //
-        if(!$this->target = Event::with(['place','gatewayPay','gatewayPay.appGateway','ticketsTypes','ticketsTypes.tickets'])->where('organizer_id',$this->organizerId)->where('id',$this->target_id)->first())
+        if(!$this->target = Event::with([
+            'place',
+            'gatewayPay',
+            'gatewayPay.appGateway',
+            'creator',
+            'ticketsTypes',
+            'ticketsTypes.creator',
+            'ticketsTypes.tickets',
+        ])->where('organizer_id',$this->organizerId)->where('id',$this->target_id)->first())
             $this->alterarTarget();
 
         //
@@ -98,4 +106,3 @@ class DashboardEvento extends Component
         return redirect()->route('dashboard-eventos');
     }
 }
-

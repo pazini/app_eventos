@@ -10,8 +10,10 @@ use App\Models\CustomerOrganizationPlace;
 use App\Models\CustomerOrganizer;
 use App\Models\CustomerPayGateway;
 use App\Models\Faturamento;
+use App\Models\User;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
@@ -114,6 +116,32 @@ class Event extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Event $event) {
+            if ($userId = auth()->id()) {
+                $event->created_by = $userId;
+                $event->updated_by = $userId;
+            }
+        });
+
+        static::updating(function (Event $event) {
+            if ($userId = auth()->id()) {
+                $event->updated_by = $userId;
+            }
+        });
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 
     public function customer()
     {

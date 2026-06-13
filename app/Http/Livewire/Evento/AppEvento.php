@@ -502,7 +502,8 @@ class AppEvento extends Component
                 'organizer.customer:id,name_corporate',
                 'organizer.organization:id,organization_name',
             ])
-            ->where('active', true);
+            ->where('active', true)
+            ->whereHas('customer');
 
         // Filtro de status
         if ($this->filterStatus === 'ativas') {

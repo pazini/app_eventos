@@ -692,7 +692,14 @@ if (!function_exists('sessionCustomers')) {
         // CUSTOMERS / NAO UPDATE
         if(Session::get('customers') && !$update)
         {
-            return Session::get('customers');
+            // Invalida cache se houver customers inativos salvos na sessão
+            $cached = Session::get('customers');
+            $hasInactive = collect($cached)->contains(fn($c) => isset($c->is_active) && !$c->is_active);
+            if ($hasInactive) {
+                $update = true;
+            } else {
+                return $cached;
+            }
         }
 
         //
@@ -703,9 +710,9 @@ if (!function_exists('sessionCustomers')) {
             $userRole = Auth::user()->app->first()->pivot->user_role ?? null;
 
             if(in_array($userRole, ['admin', 'super-admin'])) {
-                // Super-admin vê customers de TODOS os apps (sem filtro de tenant)
+                // Super-admin vê customers de TODOS os apps (sem filtro de tenant), apenas ativos
                 if($userRole === 'super-admin') {
-                    $customers = Customer::withoutGlobalScopes()->get();
+                    $customers = Customer::withoutGlobalScopes()->where('is_active', true)->get();
                 }
                 // Admin vê apenas customers do app atual (com filtro de tenant)
                 else {

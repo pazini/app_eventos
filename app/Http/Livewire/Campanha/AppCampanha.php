@@ -86,7 +86,8 @@ class AppCampanha extends Component
     protected function loadCampaigns()
     {
         $query = Campaign::with(['customer', 'organization'])
-            ->where('visibility_public', true);
+            ->where('visibility_public', true)
+            ->whereHas('customer');
 
         // Filtro de status
         if ($this->filterStatus === 'ativas') {
